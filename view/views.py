@@ -71,7 +71,7 @@ class SearchAPI(ListCreateAPIView):
         data['places']=serializer.data
         return Response({'status': True,'message':"working",'data':data})
     def post(self, request, *args, **kwargs):
-        SearchAPI.queryset = Places.objects.filter(dish_name__contains=request.data['place'])
+        SearchAPI.queryset = Places.objects.filter(place_name__contains=request.data['place'])
         return self.list(request, *args, **kwargs)
     def get(self, request, *args, **kwargs):
         return Response({'status':False , "message":"method GET not allowed"})
