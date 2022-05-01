@@ -41,7 +41,7 @@ class CustomerRegistrationSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required= True)
     username = serializers.CharField(required= True)
     phone = serializers.CharField(required= True)
-    gender = serializers.BooleanField(required= True)
+    gender = serializers.CharField(required= True)
     country = serializers.CharField(required= True)
     date_of_birth = serializers.DateField(required= True)
     class Meta:
