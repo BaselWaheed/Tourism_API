@@ -41,9 +41,12 @@ class CustomerRegistrationSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required= True)
     username = serializers.CharField(required= True)
     phone = serializers.CharField(required= True)
+    gender = serializers.BooleanField(required= True)
+    country = serializers.CharField(required= True)
+    date_of_birth = serializers.DateField(required= True)
     class Meta:
         model = User
-        fields = ['id','first_name','last_name','username', 'email', 'password' ,'phone']
+        fields = ['id','first_name','last_name','username', 'email', 'password' ,'phone','gender','country','date_of_birth']
         read_only_fields = ['id']
         extra_kwargs={
             'password' :{'write_only':True}
@@ -52,7 +55,11 @@ class CustomerRegistrationSerializer(serializers.ModelSerializer):
         user =User(
             first_name =self.validated_data['first_name'],
             last_name =self.validated_data['last_name'],
-            username =self.validated_data['username'],  
+            username =self.validated_data['username'],
+            gender =self.validated_data['gender'],
+            country =self.validated_data['country'],
+            date_of_birth =self.validated_data['date_of_birth'],
+
         )       
         if EmailAddress.objects.filter(email=self.validated_data['email']).exists():
             raise Validation({

@@ -32,7 +32,7 @@ class Rate(models.Model):
     place = models.ForeignKey(Places, on_delete=models.CASCADE)
     rate = models.IntegerField()
     def __str__(self):
-        return self.place
+        return self.place.place_name
 
 
 class Event(models.Model):
@@ -42,11 +42,11 @@ class Event(models.Model):
     discription = models.CharField( max_length=500)
 
     def __str__(self):
-        return self.place
+        return self.place.place_name
 
 
 class Offers(models.Model):
     place = models.OneToOneField(Places, on_delete=models.CASCADE)
     new_price =models.IntegerField()
     def __str__(self):
-        return self.place
+        return self.place.place_name

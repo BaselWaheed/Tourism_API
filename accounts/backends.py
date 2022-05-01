@@ -10,11 +10,13 @@ class CommonAuthBackend(ModelBackend):
         elif(PhoneNumber.objects.filter(phone=username).exists()):
             mego=PhoneNumber.objects.get(phone=username)
             text = mego.user
+
         elif(User.objects.filter(username=username).exists()):
             text=User.objects.get(username=username)
+            
         else :
             return None
-
+        
         try :
             user = User.objects.get(username=text)
 
