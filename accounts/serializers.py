@@ -144,6 +144,7 @@ class SendPAsswordSerializer(serializers.Serializer):
             user = EmailAddress.objects.get(email=email)
             uid = urlsafe_base64_encode(force_bytes(user.id))
             h=User.objects.get(pk=user.id)
+            print(user)
             token = PasswordResetTokenGenerator().make_token(h)
             request = self.context['request']
             site = get_current_site(request).domain

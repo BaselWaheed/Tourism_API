@@ -13,14 +13,19 @@ class Turism(models.Model):
 
 
 class Places(models.Model):
+    classes =[
+        ("A","A"),
+        ("B","B"),
+        ("C","C"),
+    ]
     type = models.ForeignKey(Turism, on_delete=models.CASCADE)
     place_name =  models.CharField(max_length=50)
     Description = models.TextField()
     location = models.URLField()
-    price = models.IntegerField()
-    comment = models.CharField(max_length=500)
+    price_class = models.CharField(max_length=1,choices=classes)
     image = models.URLField()
     is_active = models.BooleanField(default=False)
+    favourite_place = models.ManyToManyField(User, through='Favouriteplace')
 
 
     def __str__(self):
@@ -36,6 +41,7 @@ class Rate(models.Model):
 
 
 class Event(models.Model):
+    event_name = models.CharField(max_length=30,null=True)
     place = models.ForeignKey(Places, on_delete=models.CASCADE)
     date_from = models.DateTimeField(auto_now_add=True)
     date_to = models.DateTimeField()
@@ -45,8 +51,34 @@ class Event(models.Model):
         return self.place.place_name
 
 
+
+
 class Offers(models.Model):
     place = models.OneToOneField(Places, on_delete=models.CASCADE)
+    old_price =models.IntegerField()
     new_price =models.IntegerField()
+    
     def __str__(self):
         return self.place.place_name
+
+
+
+class Favouriteplace(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    place = models.ForeignKey(Places, on_delete=models.CASCADE)
+    is_favourite = models.BooleanField(default =False)
+
+
+    def __str__(self):
+        return self.user.username       
+
+
+
+
+class Commenteplace(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    place = models.ForeignKey(Places, on_delete=models.CASCADE)
+    comment = models.CharField(max_length=1000,null=False)
+
+    def __str__(self):
+        return self.user.username      

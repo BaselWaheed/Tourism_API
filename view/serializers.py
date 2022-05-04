@@ -1,12 +1,11 @@
 from rest_framework import serializers
-
-from .models import Offers, Turism , Places , Rate , Event
+from .models import Commenteplace, Favouriteplace, Offers, Turism , Places , Rate , Event
 
 
 
 class PlacesSerializer(serializers.ModelSerializer):
     rate = serializers.SerializerMethodField()
-
+    in_favourite = serializers.SerializerMethodField()
     def get_rate(self,obj):
         rate_value = 0
         count = 0
@@ -19,11 +18,18 @@ class PlacesSerializer(serializers.ModelSerializer):
         else :
             return 2
 
+    def get_in_favourite(self,obj):
+        favourite = Favouriteplace.objects.filter(user=self.context['request'].user).filter(place_id=obj.id)
+        if favourite  :
+            return True
+        else :
+            return False
+        
 
 
     class Meta:
         model = Places
-        fields = ['place_name','Description','location','price','comment','image','is_active','rate']
+        fields = ['id','place_name','Description','location','image','is_active','rate','in_favourite']
 
 
 class TursimSerializer(serializers.ModelSerializer):
@@ -39,7 +45,7 @@ class EventSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        fields = ['date_from','date_to','discription','place']
+        fields = ['event_name','date_from','date_to','place','discription']
         depth = 1
 
 class OffersSerializer(serializers.ModelSerializer):
@@ -47,3 +53,9 @@ class OffersSerializer(serializers.ModelSerializer):
         model = Offers
         fields = '__all__'
         depth = 1
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Commenteplace
+        fields = ['user','place','comment']

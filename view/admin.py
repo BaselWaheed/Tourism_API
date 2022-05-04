@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Offers, Turism  ,Places , Rate , Event
+from .models import Commenteplace, Favouriteplace, Offers, Turism  ,Places , Rate , Event
 
 
 
@@ -16,7 +16,7 @@ class RateAdmin(admin.ModelAdmin):
 admin.site.register(Rate,RateAdmin)
 ############################################################################
 class PlacesAdmin(admin.ModelAdmin):
-    list_display = ['place_name' , 'price', 'type' , 'is_active']
+    list_display = ['place_name' ,  'type' , 'is_active']
     list_filter = ['type']
     search_fields = ['place_name']
 
@@ -35,4 +35,5 @@ class EventAdmin(admin.ModelAdmin):
 
 admin.site.register(Event,EventAdmin)
 
-
+admin.site.register(Favouriteplace)
+admin.site.register(Commenteplace)

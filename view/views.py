@@ -1,8 +1,8 @@
-from .models import  Offers, Turism , Places , Event
+from .models import Favouriteplace, Offers, Turism , Places , Event , Commenteplace
 from rest_framework.response import Response
 from .serializers import EventSerializer, OffersSerializer, PlacesSerializer , TursimSerializer
 from rest_framework import status
-from rest_framework.permissions import AllowAny , IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.generics import ListCreateAPIView
 from rest_framework.authentication import TokenAuthentication
@@ -21,7 +21,7 @@ class PlacesAPIView(APIView):
         for item in category_serializer.data :
             category = Turism.objects.get(name=item['name'])
             categoryfilter = Places.objects.filter(type=category.id)
-            serializer = PlacesSerializer(categoryfilter,many=True)
+            serializer = PlacesSerializer(categoryfilter,many=True,context={"request":request})
             for product in serializer.data :
                 products['places'].append(product)
             item['info']=products  
@@ -37,7 +37,7 @@ class EventAndOffersAPIView(APIView):
     def get(self,request):
         data = {"popular_places":[],"Top_Rated":[],"offers":[],"events":[]}
         places = Places.objects.filter(is_active=True)
-        places_serializer = PlacesSerializer(places,many=True)
+        places_serializer = PlacesSerializer(places,many=True,context={"request":request})
         for item in places_serializer.data:
             data["popular_places"].append(item)
             if item['rate'] >=3:
@@ -54,9 +54,8 @@ class EventAndOffersAPIView(APIView):
 
 
 class SearchAPI(ListCreateAPIView):
-    # authentication_classes = (GuestAuthentication,)
-    # permission_classes = (IsAuthenticated,)
-    permission_classes = (AllowAny,)
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
     queryset = Places.objects.all()
     serializer_class = PlacesSerializer
     def list(self, request, *args, **kwargs):
@@ -75,3 +74,40 @@ class SearchAPI(ListCreateAPIView):
         return self.list(request, *args, **kwargs)
     def get(self, request, *args, **kwargs):
         return Response({'status':False , "message":"method GET not allowed"})
+
+
+
+class GetAddOrDeleteFavouriteView(APIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = [IsAuthenticated,]
+    def get(self,request):
+        data = {}
+        query = Places.objects.filter(favourite_place=self.request.user)
+        serializers = PlacesSerializer(query, many=True,context={"request":request})
+        if serializers is None :
+            return Response({'status':False , 'messege' : 'no favourite' })  
+        else :
+            data['places']= serializers.data
+            return Response({'status':True , 'messege' : 'anta kda tmam' , 'data': data },status=status.HTTP_200_OK)
+    def post(self,request):
+        place = Places.objects.get(id=int(request.data['place_id']))
+        if request.user  not in place.favourite_place.all():
+            Favouriteplace.objects.create(user=self.request.user, place=place ,is_favourite=True) 
+            return Response({'status': True,'message': 'place added to favourite'}, status=status.HTTP_200_OK)
+        elif  request.user in place.favourite_place.all():
+            place.favourite_place.remove(request.user)
+            return Response({'status': True,'message': 'place removed from favourite'}, status=status.HTTP_204_NO_CONTENT)
+
+
+
+# class GetAddOrDeleteCommentView(APIView):
+#     authentication_classes = (TokenAuthentication,)
+#     permission_classes = [IsAuthenticated,]
+#     def post(self,request):
+#         place = Places.objects.get(id=int(request.data['place_id']))
+#         if request.user  not in place.favourite_place.all():
+#             Favouriteplace.objects.create(user=self.request.user, place=place ,is_favourite=True) 
+#             return Response({'status': True,'message': 'place added to favourite'}, status=status.HTTP_200_OK)
+#         elif  request.user in place.favourite_place.all():
+#             place.favourite_place.remove(request.user)
+#             return Response({'status': True,'message': 'place removed from favourite'}, status=status.HTTP_204_NO_CONTENT)
