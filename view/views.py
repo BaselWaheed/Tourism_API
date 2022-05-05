@@ -1,6 +1,7 @@
+from multiprocessing import context
 from .models import Favouriteplace, Offers, Turism , Places , Event , Commenteplace
 from rest_framework.response import Response
-from .serializers import EventSerializer, OffersSerializer, PlacesSerializer , TursimSerializer
+from .serializers import CommentSerializer, EventSerializer, OffersSerializer, PlacesSerializer , TursimSerializer
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
@@ -90,7 +91,10 @@ class GetAddOrDeleteFavouriteView(APIView):
             data['places']= serializers.data
             return Response({'status':True , 'messege' : 'anta kda tmam' , 'data': data },status=status.HTTP_200_OK)
     def post(self,request):
-        place = Places.objects.get(id=int(request.data['place_id']))
+        try :
+            place = Places.objects.get(id=int(request.data['place_id']))
+        except :
+            return Response({'status': False,'message': 'please enter place_id correctly'}, status=status.HTTP_400_BAD_REQUEST)
         if request.user  not in place.favourite_place.all():
             Favouriteplace.objects.create(user=self.request.user, place=place ,is_favourite=True) 
             return Response({'status': True,'message': 'place added to favourite'}, status=status.HTTP_200_OK)
@@ -100,14 +104,50 @@ class GetAddOrDeleteFavouriteView(APIView):
 
 
 
-# class GetAddOrDeleteCommentView(APIView):
-#     authentication_classes = (TokenAuthentication,)
-#     permission_classes = [IsAuthenticated,]
-#     def post(self,request):
-#         place = Places.objects.get(id=int(request.data['place_id']))
-#         if request.user  not in place.favourite_place.all():
-#             Favouriteplace.objects.create(user=self.request.user, place=place ,is_favourite=True) 
-#             return Response({'status': True,'message': 'place added to favourite'}, status=status.HTTP_200_OK)
-#         elif  request.user in place.favourite_place.all():
-#             place.favourite_place.remove(request.user)
-#             return Response({'status': True,'message': 'place removed from favourite'}, status=status.HTTP_204_NO_CONTENT)
+class GetAddOrDeleteCommentView(APIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = [IsAuthenticated,]
+    def post(self,request):
+        try :
+            place = Places.objects.get(id=int(request.data['place_id']))
+        except:
+            return Response({'status': False,'message': 'Error data '}, status=status.HTTP_200_OK)
+        Commenteplace.objects.create(user=self.request.user, place=place ,comment=request.data['comment']) 
+        return Response({'status': True,'message': 'comment added successfully'}, status=status.HTTP_200_OK)
+
+
+    def put(self,request,**kwargs):
+        try :
+            comment = Commenteplace.objects.get(pk=int(request.data.get('comment_id')))
+        except :
+            return Response({'status': False,'message': 'please enter comment_id correctly'}, status=status.HTTP_400_BAD_REQUEST)
+        if comment.user == request.user:
+            comment.comment = request.data['comment']
+            comment.save()
+            return Response({'status': True,'message': 'comment updated successfully'}, status=status.HTTP_200_OK)
+        else :
+            return Response({'status': False,'message': 'can not update comment'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+class PLaceDetailsAPIView(APIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = [IsAuthenticated,]
+    def post(self,request):
+        data = {}
+        comments ={"comments":[]}
+        try :
+            place = Places.objects.get(id=int(request.data['place_id']))
+            comment =Commenteplace.objects.filter(place=int(request.data['place_id']))
+        except:
+            return Response({'status': False,'message': 'please enter place_id'}, status=status.HTTP_400_BAD_REQUEST)
+        place_serializer = PlacesSerializer(place,context={"request":request})
+        comment_serializer = CommentSerializer(comment, many=True)
+        for comment in comment_serializer.data:
+            comments['comments'].append(comment)
+        data.update(place_serializer.data)
+        data.update(comments)
+        return Response({'status': True,'message': 'null',"data":data}, status=status.HTTP_200_OK)
+    
+

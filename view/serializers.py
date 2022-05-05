@@ -45,7 +45,7 @@ class EventSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        fields = ['event_name','date_from','date_to','place','discription']
+        fields = ['event_name','event_image','date_from','date_to','place','discription']
         depth = 1
 
 class OffersSerializer(serializers.ModelSerializer):
@@ -56,6 +56,7 @@ class OffersSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField()
     class Meta:
         model = Commenteplace
-        fields = ['user','place','comment']
+        fields = ['id','user','comment']

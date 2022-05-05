@@ -36,4 +36,9 @@ class EventAdmin(admin.ModelAdmin):
 admin.site.register(Event,EventAdmin)
 
 admin.site.register(Favouriteplace)
-admin.site.register(Commenteplace)
+
+
+
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ['id','user' ,'place']
+admin.site.register(Commenteplace,CommentAdmin)

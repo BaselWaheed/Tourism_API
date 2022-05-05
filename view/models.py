@@ -42,6 +42,7 @@ class Rate(models.Model):
 
 class Event(models.Model):
     event_name = models.CharField(max_length=30,null=True)
+    event_image = models.URLField()
     place = models.ForeignKey(Places, on_delete=models.CASCADE)
     date_from = models.DateTimeField(auto_now_add=True)
     date_to = models.DateTimeField()
@@ -54,6 +55,7 @@ class Event(models.Model):
 
 
 class Offers(models.Model):
+    offer_name = models.CharField(max_length=100)
     place = models.OneToOneField(Places, on_delete=models.CASCADE)
     old_price =models.IntegerField()
     new_price =models.IntegerField()
