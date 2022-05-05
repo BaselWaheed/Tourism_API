@@ -35,13 +35,13 @@ class Places(models.Model):
 class Rate(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     place = models.ForeignKey(Places, on_delete=models.CASCADE)
-    rate = models.IntegerField()
+    rate = models.FloatField()
     def __str__(self):
         return self.place.place_name
 
 
 class Event(models.Model):
-    event_name = models.CharField(max_length=30,null=True)
+    event_name = models.CharField(max_length=100,null=True)
     event_image = models.URLField()
     place = models.ForeignKey(Places, on_delete=models.CASCADE)
     date_from = models.DateTimeField(auto_now_add=True)
