@@ -1,5 +1,5 @@
 from multiprocessing import context
-from .models import Favouriteplace, Offers, Turism , Places , Event , Commenteplace
+from .models import Favouriteplace, Offers, Turism , Places , Event , Commenteplace , Rate
 from rest_framework.response import Response
 from .serializers import CommentSerializer, EventSerializer, OffersSerializer, PlacesSerializer , TursimSerializer
 from rest_framework import status
@@ -151,3 +151,18 @@ class PLaceDetailsAPIView(APIView):
         return Response({'status': True,'message': 'null',"data":data}, status=status.HTTP_200_OK)
     
 
+class AddRateAPIView(APIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = [IsAuthenticated,]
+    def post(self,request):
+        try :
+            place = Places.objects.get(id=int(request.data['place_id']))
+        except:
+            return Response({'status': False,'message': 'please enter place_id'}, status=status.HTTP_400_BAD_REQUEST)
+        if Rate.objects.filter(user=self.request.user , place=place):
+            user_rate = Rate.objects.get(user=self.request.user , place=place)
+            user_rate.rate = request.data['rate']
+            user_rate.save()
+            return Response({'status': True,'message': 'rate updated to place successfully'}, status=status.HTTP_200_OK)
+        Rate.objects.create(user=self.request.user, place=place ,rate=request.data['rate']) 
+        return Response({'status': True,'message': 'rate added to place successfully'}, status=status.HTTP_200_OK)

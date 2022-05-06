@@ -1,5 +1,5 @@
 from django.urls import path 
-from .views import EventAndOffersAPIView, PlacesAPIView , SearchAPI , GetAddOrDeleteFavouriteView , GetAddOrDeleteCommentView ,PLaceDetailsAPIView
+from .views import EventAndOffersAPIView, PlacesAPIView , SearchAPI , GetAddOrDeleteFavouriteView , GetAddOrDeleteCommentView ,PLaceDetailsAPIView,AddRateAPIView
 
 urlpatterns = [
     path('places/',PlacesAPIView.as_view()),
@@ -8,4 +8,5 @@ urlpatterns = [
     path('favouriteplace/',GetAddOrDeleteFavouriteView.as_view() , name = 'favourite'),
     path('comment/',GetAddOrDeleteCommentView.as_view(),),
     path('details/',PLaceDetailsAPIView.as_view(),),
+    path('rate/',AddRateAPIView.as_view(),),
 ]
