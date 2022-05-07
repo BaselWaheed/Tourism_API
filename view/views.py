@@ -38,10 +38,11 @@ class EventAndOffersAPIView(APIView):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
     def get(self,request):
-        data = {"popular_places":[],"Top_Rated":[],"offers":[],"events":[]}
-        places = Places.objects.filter(is_active=True)
-        places_serializer = PlacesSerializer(places,many=True,context={"request":request})
-        for item in places_serializer.data:
+        data = {"popular_places":[],"Top_Rated":[],"offers":[],"events":[],"places":[]}
+        places = Places.objects.all()
+        place = places.filter(is_active=True)
+        place_serializer = PlacesSerializer(place,many=True,context={"request":request})
+        for item in place_serializer.data:
             data["popular_places"].append(item)
             if item['rate'] >=3:
                 data["Top_Rated"].append(item)
@@ -53,7 +54,10 @@ class EventAndOffersAPIView(APIView):
         event_serializer = EventSerializer(event,many=True)
         for item in event_serializer.data:
             data["events"].append(item)
-        return Response({'status':True,"message":"null",'data':data})
+        places_serializer = PlacesSerializer(places,many=True,context={"request":request})
+        for item in places_serializer.data:
+            data["places"].append(item)
+        return Response({'status':True,"message":"null",'data':data},status=status.HTTP_200_OK)
 
 
 # class SearchAPI(ListCreateAPIView):
