@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Commenteplace, Favouriteplace, Offers, Turism , Places , Rate , Event
+from .models import Commenteplace, Favouriteplace, Offers, Turism , Places , Rate , Event 
 
 
 
@@ -19,10 +19,13 @@ class PlacesSerializer(serializers.ModelSerializer):
             return 2
 
     def get_in_favourite(self,obj):
-        favourite = Favouriteplace.objects.filter(user=self.context['request'].user).filter(place_id=obj.id)
-        if favourite  :
-            return True
-        else :
+        try:
+            favourite = Favouriteplace.objects.filter(user=self.context['request'].user).filter(place_id=obj.id)
+            if favourite  :
+                return True
+            else :
+                return False
+        except :
             return False
         
 
@@ -60,3 +63,4 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Commenteplace
         fields = ['id','user','comment']
+

@@ -1,4 +1,4 @@
-from multiprocessing import context
+from django.http import JsonResponse
 from .models import Favouriteplace, Offers, Turism , Places , Event , Commenteplace , Rate
 from rest_framework.response import Response
 from .serializers import CommentSerializer, EventSerializer, OffersSerializer, PlacesSerializer , TursimSerializer
@@ -7,6 +7,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.generics import ListCreateAPIView
 from rest_framework.authentication import TokenAuthentication
+from rest_framework.decorators import api_view
+
 
 
 
@@ -54,28 +56,78 @@ class EventAndOffersAPIView(APIView):
         return Response({'status':True,"message":"null",'data':data})
 
 
-class SearchAPI(ListCreateAPIView):
+# class SearchAPI(ListCreateAPIView):
+#     authentication_classes = (TokenAuthentication,)
+#     permission_classes = (IsAuthenticated,)
+#     queryset = Places.objects.all()
+#     serializer_class = PlacesSerializer
+#     def list(self, request, *args, **kwargs):
+#         data = {}
+#         queryset = self.filter_queryset(self.get_queryset())
+#         page = self.paginate_queryset(queryset)
+#         if page is not None:
+#             serializer = self.get_serializer(page, many=True)
+#             data['places']=serializer.data
+#             return self.get_paginated_response({'status': True,'data':data})
+#         serializer = self.get_serializer(queryset, many=True)
+#         data['places']=serializer.data
+#         return Response({'status': True,'message':"working",'data':data})
+#     def post(self, request, *args, **kwargs):
+#         SearchAPI.queryset = Places.objects.filter(place_name__contains=request.data['place'])
+#         return self.list(request, *args, **kwargs)
+#     def get(self, request, *args, **kwargs):
+#         return Response({'status':False , "message":"method GET not allowed"})
+
+
+class SearchAPI(APIView):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
-    queryset = Places.objects.all()
-    serializer_class = PlacesSerializer
-    def list(self, request, *args, **kwargs):
-        data = {}
-        queryset = self.filter_queryset(self.get_queryset())
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            data['places']=serializer.data
-            return self.get_paginated_response({'status': True,'data':data})
-        serializer = self.get_serializer(queryset, many=True)
-        data['places']=serializer.data
-        return Response({'status': True,'message':"working",'data':data})
-    def post(self, request, *args, **kwargs):
-        SearchAPI.queryset = Places.objects.filter(place_name__contains=request.data['place'])
-        return self.list(request, *args, **kwargs)
-    def get(self, request, *args, **kwargs):
-        return Response({'status':False , "message":"method GET not allowed"})
+    def post(self,request,**kwargs):
+        data= {"places":[]}
+        try :
+            query = request.data['place']
+        except:
+            return Response({'status':False , "message":"enter place"},status=status.HTTP_200_OK)
+        place_name = Places.objects.all()
+        event_name = Event.objects.all()
+        offer_name = Offers.objects.all()
+        if query:
+            place_name = place_name.filter(place_name__icontains=query)
+            event_name = event_name.filter(event_name__icontains=query)
+            offer_name = offer_name.filter(offer_name__icontains=query)
+        event_serializer=EventSerializer(instance=event_name, many=True).data
+        place_serializer = PlacesSerializer(instance=place_name, many=True).data
+        offer_serializer = OffersSerializer(instance=offer_name, many=True).data
+        for item in event_serializer:
+            data['places'].append(item)
+        for item in place_serializer :
+            data['places'].append(item)
+        for item in offer_serializer :
+            data['places'].append(item)
+        return Response({'status':True , "message":"working","data":data},status=status.HTTP_200_OK)
 
+# @api_view(['GET', 'POST'])
+# def view(request):
+#     data= {"places":[]}
+#     # query = request.data['place']
+#     query = ''
+#     place_name = Places.objects.all()
+#     event_name = Event.objects.all()
+#     offer_name = Offers.objects.all()
+#     if query:
+#         place_name = place_name.filter(place_name__icontains=query)
+#         event_name = event_name.filter(event_name__icontains=query)
+#         offer_name = offer_name.filter(offer_name__icontains=query)
+#     event_serializer=EventSerializer(instance=event_name, many=True).data
+#     place_serializer = PlacesSerializer(instance=place_name, many=True).data
+#     offer_serializer = OffersSerializer(instance=offer_name, many=True).data
+#     for item in event_serializer:
+#         data['places'].append(item)
+#     for item in place_serializer :
+#         data['places'].append(item)
+#     for item in offer_serializer :
+#         data['places'].append(item)
+#     return JsonResponse({"status":True,"message":"working","data":data})
 
 
 class GetAddOrDeleteFavouriteView(APIView):
