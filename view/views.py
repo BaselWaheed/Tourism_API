@@ -156,7 +156,7 @@ class GetAddOrDeleteFavouriteView(APIView):
             return Response({'status': True,'message': 'place added to favourite'}, status=status.HTTP_200_OK)
         elif  request.user in place.favourite_place.all():
             place.favourite_place.remove(request.user)
-            return Response({'status': True,'message': 'place removed from favourite'}, status=status.HTTP_204_NO_CONTENT)
+            return Response({'status': True,'message': 'place removed from favourite'}, status=status.HTTP_200_OK)
 
 
 
