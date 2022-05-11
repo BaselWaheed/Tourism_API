@@ -146,7 +146,7 @@ class SendPAsswordSerializer(serializers.Serializer):
             print(user.id)
             print(user.user)
             print(user.user.id)
-            h=User.objects.get(pk=user.id)
+            h=User.objects.get(pk=user.user.id)
             print(user)
             token = PasswordResetTokenGenerator().make_token(h)
             request = self.context['request']
