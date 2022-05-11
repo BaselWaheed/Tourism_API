@@ -75,9 +75,9 @@ class SendpasswordResetEmail(generics.GenericAPIView):
     serializer_class = SendPAsswordSerializer
     def post(self,request,format=None):
         serializer = self.get_serializer(data =request.data)
-        if serializer.is_valid(raise_exception=True):
-            return Response({'status': True,'messege' : 'check your email'},status=status.HTTP_200_OK)
-        return Response({'status' : False,'messege': 'email'}, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        return Response({'status': True,'messege' : 'check your email'},status=status.HTTP_200_OK)
+        # return Response({'status' : False,'messege': 'email'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserPasswordResetView(APIView):
