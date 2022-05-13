@@ -6,7 +6,7 @@ from .models import Commenteplace, Favouriteplace, Offers, Turism , Places , Rat
 class PlacesSerializer(serializers.ModelSerializer):
     rate = serializers.SerializerMethodField()
     in_favourite = serializers.SerializerMethodField()
-
+    city =  serializers.StringRelatedField()
     def get_rate(self,obj):
         rate_value = 0
         count = 0
