@@ -6,6 +6,7 @@ from .models import Commenteplace, Favouriteplace, Offers, Turism , Places , Rat
 class PlacesSerializer(serializers.ModelSerializer):
     rate = serializers.SerializerMethodField()
     in_favourite = serializers.SerializerMethodField()
+
     def get_rate(self,obj):
         rate_value = 0
         count = 0
@@ -27,12 +28,11 @@ class PlacesSerializer(serializers.ModelSerializer):
                 return False
         except :
             return False
-        
-
+    
 
     class Meta:
         model = Places
-        fields = ['id','place_name','Description','location','image','is_active','rate','in_favourite']
+        fields = ['id','place_name','Description','city','location','image','is_active','rate','in_favourite']
 
 
 class TursimSerializer(serializers.ModelSerializer):

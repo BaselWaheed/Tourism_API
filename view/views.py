@@ -56,6 +56,9 @@ class EventAndOffersAPIView(APIView):
             data["events"].append(item)
         places_serializer = PlacesSerializer(places,many=True,context={"request":request})
         for item in places_serializer.data:
+            comment =Commenteplace.objects.filter(place=item['id'])
+            comment_serializer = CommentSerializer(comment, many=True)
+            item["comments"]=comment_serializer.data
             data["places"].append(item)
         return Response({'status':True,"message":"null",'data':data},status=status.HTTP_200_OK)
 
@@ -222,3 +225,5 @@ class AddRateAPIView(APIView):
             return Response({'status': True,'message': 'rate updated to place successfully'}, status=status.HTTP_200_OK)
         Rate.objects.create(user=self.request.user, place=place ,rate=request.data['rate']) 
         return Response({'status': True,'message': 'rate added to place successfully'}, status=status.HTTP_200_OK)
+
+

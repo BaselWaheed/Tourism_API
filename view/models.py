@@ -10,7 +10,8 @@ class Turism(models.Model):
     def __str__(self):
         return self.name
     
-
+class City(models.Model):
+    city_name = models.CharField(("city"), max_length=50)
 
 class Places(models.Model):
     classes =[
@@ -20,6 +21,7 @@ class Places(models.Model):
     ]
     type = models.ForeignKey(Turism, on_delete=models.CASCADE)
     place_name =  models.CharField(max_length=50)
+    city = models.ForeignKey(City, verbose_name=("city"), on_delete=models.CASCADE , null=True , blank=True)
     Description = models.TextField()
     location = models.URLField()
     price_class = models.CharField(max_length=1,choices=classes)
