@@ -12,6 +12,9 @@ class Turism(models.Model):
     
 class City(models.Model):
     city_name = models.CharField(("city"), max_length=50)
+    
+    def __str__(self):
+        return self.city_name
 
 class Places(models.Model):
     classes =[
