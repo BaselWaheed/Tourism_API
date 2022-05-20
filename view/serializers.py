@@ -4,6 +4,7 @@ from .models import Commenteplace, Favouriteplace, Offers, Turism , Places , Rat
 
 
 class PlacesSerializer(serializers.ModelSerializer):
+    type =  serializers.StringRelatedField()
     rate = serializers.SerializerMethodField()
     in_favourite = serializers.SerializerMethodField()
     city =  serializers.StringRelatedField()
@@ -32,13 +33,13 @@ class PlacesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Places
-        fields = ['id','place_name','Description','city','location','image','is_active','rate','in_favourite']
+        fields = ['id','place_name','type','age_category','Description','city','price_class','location','image','is_active','rate','in_favourite']
 
 
 class TursimSerializer(serializers.ModelSerializer):
     class Meta:
         model = Turism
-        fields = ['name']
+        fields = ['id','name','cat_image']
 
 
 

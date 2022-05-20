@@ -1,0 +1,96 @@
+*,
+*:before,
+*:after{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: "Nunito",
+
+}
+body{
+    font-family:"Nunito";
+    background: url("../image/py.jpg");
+    background-position: fixed ;
+    background-size: 1920px 1100px;
+    background-repeat: no-repeat;
+}
+form{
+    font-family:"Nunito";
+    background-color: #f6f6f6ff;
+    width: 450px;
+    padding: 50px 40px;
+    position: absolute;
+    transform: translate(-50%,-50%);
+    top: 50%;
+    left: 50%;
+    border-radius: 8px;
+    box-shadow: 20px 20px 30px rgba(0,0,0,0.15);
+}
+label{
+    font-weight: 500;
+    color: #101030;
+}
+input{
+    font-family:"Nunito";
+    display: block;
+    width: 100%;
+    margin-top: 5px;
+    padding: 12px;
+    border-radius: 12px;
+    outline: none;
+    color: #101010;
+}
+#password{
+    margin-bottom: 30px;
+}
+input[type="password"]{
+    border: 2px solid #c2c2c2;
+}
+input[type="button"]{
+    background-color: #005764;
+    border: none;
+    color: #ffffff;
+    font-weight: 500;
+    font-size: 18px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+p{
+    font-size: 14px;
+    margin: 15px 0;
+    display: inline-block;
+    color: #ffffff;
+}
+header,footer{
+    font-family:"Nunito";
+    position: absolute;
+    background-color: #005764;
+    width: 100%;
+    color: #ffffff;
+}
+header{
+    display: flex;
+    align-items: center;
+    height: 8vh;
+}
+header h1{
+    position: absolute;
+    left: 39%;
+}
+footer{
+    align-items: center;
+    height: 5vh;
+    bottom: 0;
+    display: flex;
+}
+footer h2{
+    position: absolute;
+    left: 40%;
+}
+img{
+    float: right;
+    max-height: 100%;
+    max-width: 100%;
+    background-color: #ffffff;
+}

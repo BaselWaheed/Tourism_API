@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from .models import Favouriteplace, Offers, Turism , Places , Event , Commenteplace , Rate
+from .models import Favouriteplace, InterrestCategory, Offers, Turism , Places , Event , Commenteplace , Rate
 from rest_framework.response import Response
 from .serializers import CommentSerializer, EventSerializer, OffersSerializer, PlacesSerializer , TursimSerializer
 from rest_framework import status
@@ -63,27 +63,27 @@ class EventAndOffersAPIView(APIView):
         return Response({'status':True,"message":"null",'data':data},status=status.HTTP_200_OK)
 
 
-# class SearchAPI(ListCreateAPIView):
-#     authentication_classes = (TokenAuthentication,)
-#     permission_classes = (IsAuthenticated,)
-#     queryset = Places.objects.all()
-#     serializer_class = PlacesSerializer
-#     def list(self, request, *args, **kwargs):
-#         data = {}
-#         queryset = self.filter_queryset(self.get_queryset())
-#         page = self.paginate_queryset(queryset)
-#         if page is not None:
-#             serializer = self.get_serializer(page, many=True)
-#             data['places']=serializer.data
-#             return self.get_paginated_response({'status': True,'data':data})
-#         serializer = self.get_serializer(queryset, many=True)
-#         data['places']=serializer.data
-#         return Response({'status': True,'message':"working",'data':data})
-#     def post(self, request, *args, **kwargs):
-#         SearchAPI.queryset = Places.objects.filter(place_name__contains=request.data['place'])
-#         return self.list(request, *args, **kwargs)
-#     def get(self, request, *args, **kwargs):
-#         return Response({'status':False , "message":"method GET not allowed"})
+class SearchCityAPI(ListCreateAPIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    queryset = Places.objects.all()
+    serializer_class = PlacesSerializer
+    def list(self, request, *args, **kwargs):
+        data = {}
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            data['places']=serializer.data
+            return self.get_paginated_response({'status': True,'data':data})
+        serializer = self.get_serializer(queryset, many=True)
+        data['places']=serializer.data
+        return Response({'status': True,'message':"working",'data':data})
+    def post(self, request, *args, **kwargs):
+        SearchAPI.queryset = Places.objects.filter(city__contains=request.data['city'])
+        return self.list(request, *args, **kwargs)
+    def get(self, request, *args, **kwargs):
+        return Response({'status':False , "message":"method GET not allowed"})
 
 
 class SearchAPI(APIView):
@@ -227,3 +227,29 @@ class AddRateAPIView(APIView):
         return Response({'status': True,'message': 'rate added to place successfully'}, status=status.HTTP_200_OK)
 
 
+
+
+
+class GetAddOrDeleteInterrestView(APIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = [IsAuthenticated,]
+    def get(self,request):
+        data = {}
+        query = Turism.objects.filter(favourite_category=self.request.user)
+        serializers = TursimSerializer(query, many=True,context={"request":request})
+        if serializers is None :
+            return Response({'status':False , 'messege' : 'no favourite' },status=status.HTTP_200_OK)  
+        else :
+            data['category']= serializers.data
+            return Response({'status':True , 'messege' : 'anta kda tmam' , 'data': data },status=status.HTTP_200_OK)
+    def post(self,request):
+        try :
+            category = Turism.objects.get(id=int(request.data['category_id']))
+        except :
+            return Response({'status': False,'message': 'please enter category_id correctly'}, status=status.HTTP_200_OK)
+        if request.user  not in category.favourite_category.all():
+            InterrestCategory.objects.create(user=self.request.user, category=category ,is_favourite=True) 
+            return Response({'status': True,'message': 'category added to favourite'}, status=status.HTTP_200_OK)
+        elif  request.user in category.favourite_category.all():
+            category.favourite_category.remove(request.user)
+            return Response({'status': True,'message': 'category removed from favourite'}, status=status.HTTP_200_OK)

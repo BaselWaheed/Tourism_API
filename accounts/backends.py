@@ -7,6 +7,7 @@ class CommonAuthBackend(ModelBackend):
             mego=EmailAddress.objects.get(email=username)
             text = mego.user
 
+
         elif(PhoneNumber.objects.filter(phone=username).exists()):
             mego=PhoneNumber.objects.get(phone=username)
             text = mego.user

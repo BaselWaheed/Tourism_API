@@ -3,8 +3,7 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny ,IsAuthenticated
-
-from accounts.models import User
+from accounts.models import EmailAddress, User
 from .serializers import LoginSerializer ,CustomerRegistrationSerializer , UserSerializer ,SendPAsswordSerializer , PasswordChangeSerializer, UserPasswordResetSerializer
 from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
@@ -119,4 +118,26 @@ class UserProfileUpdateView(generics.RetrieveUpdateAPIView):
         return Response({"status":True,"message":" working","data":serializer.data})
 
 
-        
+from django.shortcuts import render
+from django.utils.encoding import  smart_str
+from django.utils.http import urlsafe_base64_decode   
+from django.contrib.auth.tokens import PasswordResetTokenGenerator     
+
+def resetassword(request, *args, **kwargs):
+    token = kwargs['token']
+    uid = kwargs['uid']
+    id = smart_str(urlsafe_base64_decode(uid))
+    user = EmailAddress.objects.get(id=id)
+    print(user)
+    if not PasswordResetTokenGenerator().check_token(user.user,token):
+        return render(request,'reset_failed.html')
+    if request.method== 'POST':
+        password1 =request.POST.get('password1')
+        password2 =request.POST.get('password2')
+        print(password1)
+        if password1 != password2 :
+            return render(request,'reset_failed.html')
+        user.user.set_password(password1)
+        user.user.save()
+        return render(request,'reset_complete.html')
+    return render(request,'reset_password.html')
