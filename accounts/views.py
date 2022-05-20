@@ -8,7 +8,10 @@ from .serializers import LoginSerializer ,CustomerRegistrationSerializer , UserS
 from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
 from rest_framework.authentication import TokenAuthentication
-
+from django.shortcuts import render
+from django.utils.encoding import  smart_str
+from django.utils.http import urlsafe_base64_decode   
+from django.contrib.auth.tokens import PasswordResetTokenGenerator     
 
 class LoginAPI(generics.GenericAPIView):   
     authentication_classes = ()
@@ -26,14 +29,19 @@ class LoginAPI(generics.GenericAPIView):
 
             
 class CustomerRegistrationView(generics.GenericAPIView):  # signup 
+    
     authentication_classes = ()
     permission_classes = (AllowAny,)
     serializer_class =CustomerRegistrationSerializer
     def post(self , request , *args , **kwargs):
+        data = {}
         serializer = self.get_serializer(data =request.data)
         serializer.is_valid(raise_exception= True)
-        serializer.save()
-        return Response({ 'status' : True ,'message' :'account created successfully', "data" :serializer.data },status=status.HTTP_200_OK)
+        user = serializer.save()
+        data.update(serializer.data)
+        token= Token.objects.create(user=user).key
+        data['token'] = token 
+        return Response({ 'status' : True ,'message' :'account created successfully', "data" :data },status=status.HTTP_200_OK)
 
 
 
