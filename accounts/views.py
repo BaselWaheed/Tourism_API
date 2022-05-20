@@ -127,9 +127,9 @@ def resetassword(request, *args, **kwargs):
     token = kwargs['token']
     uid = kwargs['uid']
     id = smart_str(urlsafe_base64_decode(uid))
-    user = EmailAddress.objects.get(id=id)
-    print(user)
-    if not PasswordResetTokenGenerator().check_token(user.user,token):
+    email = EmailAddress.objects.get(id=id)
+  
+    if not PasswordResetTokenGenerator().check_token(email.user,token):
         return render(request,'reset_failed.html')
     if request.method== 'POST':
         password1 =request.POST.get('password1')
@@ -137,7 +137,7 @@ def resetassword(request, *args, **kwargs):
         print(password1)
         if password1 != password2 :
             return render(request,'reset_failed.html')
-        user.user.set_password(password1)
-        user.user.save()
+        email.user.set_password(password1)
+        email.user.save()
         return render(request,'reset_complete.html')
     return render(request,'reset_password.html')

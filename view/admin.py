@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import City, Commenteplace, Favouriteplace, Offers, Turism  ,Places , Rate , Event
+from .models import City, Commenteplace, Favouriteplace, InterrestCategory, Offers, Turism  ,Places , Rate , Event
 
 
 
@@ -46,3 +46,6 @@ admin.site.register(Commenteplace,CommentAdmin)
 
 
 admin.site.register(City)
+
+
+admin.site.register(InterrestCategory)
