@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Commenteplace, Favouriteplace, Offers, Turism , Places , Rate , Event 
+from .models import Commenteplace, Favouriteplace, InterrestCategory, Offers, Turism , Places , Rate , Event 
 
 
 
@@ -37,9 +37,20 @@ class PlacesSerializer(serializers.ModelSerializer):
 
 
 class TursimSerializer(serializers.ModelSerializer):
+    in_favourite = serializers.SerializerMethodField()
+
+    def get_in_favourite(self,obj):
+        try:
+            favourite = InterrestCategory.objects.filter(user=self.context['request'].user).filter(category_id=obj.id)
+            if favourite  :
+                return True
+            else :
+                return False
+        except :
+            return False
     class Meta:
         model = Turism
-        fields = ['id','name','cat_image']
+        fields = ['id','name','cat_image','in_favourite']
 
 
 

@@ -1,4 +1,3 @@
-from django.http import JsonResponse
 from .models import Favouriteplace, InterrestCategory, Offers, Turism , Places , Event , Commenteplace , Rate
 from rest_framework.response import Response
 from .serializers import CommentSerializer, EventSerializer, OffersSerializer, PlacesSerializer , TursimSerializer
@@ -7,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.generics import ListCreateAPIView
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.decorators import api_view
+
 
 
 
@@ -20,7 +19,7 @@ class PlacesAPIView(APIView):
         data = {"category":[]}
         products = {'places':[]}
         category = Turism.objects.all()
-        category_serializer= TursimSerializer(category,many=True)
+        category_serializer= TursimSerializer(category,many=True,context={"request":request})
         for item in category_serializer.data :
             category = Turism.objects.get(name=item['name'])
             categoryfilter = Places.objects.filter(type=category.id)
