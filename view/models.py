@@ -68,8 +68,8 @@ class Event(models.Model):
     date_to = models.DateTimeField()
     description = models.CharField( max_length=500)
 
-    def __str__(self):
-        return self.city.city_name
+    # def __str__(self):
+    #     return self.city.city_name
 
 
 
