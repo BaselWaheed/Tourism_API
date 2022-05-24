@@ -72,14 +72,14 @@ class SearchCityAPI(ListCreateAPIView):
         queryset = self.filter_queryset(self.get_queryset())
         page = self.paginate_queryset(queryset)
         if page is not None:
-            serializer = self.get_serializer(page, many=True)
+            serializer = self.get_serializer(page,many=True)
             data['places']=serializer.data
             return self.get_paginated_response({'status': True,'data':data})
         serializer = self.get_serializer(queryset, many=True)
         data['places']=serializer.data
         return Response({'status': True,'message':"working",'data':data})
     def post(self, request, *args, **kwargs):
-        SearchAPI.queryset = Places.objects.filter(city__contains=request.data['city'])
+        SearchCityAPI.queryset = Places.objects.filter(city__city_name__icontains=request.data['city'])
         return self.list(request, *args, **kwargs)
     def get(self, request, *args, **kwargs):
         return Response({'status':False , "message":"method GET not allowed"})

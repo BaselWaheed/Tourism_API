@@ -63,22 +63,25 @@ class Rate(models.Model):
 class Event(models.Model):
     event_name = models.CharField(max_length=100,null=True)
     event_image = models.URLField()
-    place = models.ForeignKey(Places, on_delete=models.CASCADE)
-    date_from = models.DateTimeField(auto_now_add=True)
+    city = models.ForeignKey(City, verbose_name=("city"), on_delete=models.CASCADE , null=True)
+    date_from = models.DateTimeField()
     date_to = models.DateTimeField()
-    discription = models.CharField( max_length=500)
+    description = models.CharField( max_length=500)
 
     def __str__(self):
-        return self.place.place_name
+        return self.city.city_name
 
 
 
 
 class Offers(models.Model):
-    offer_name = models.CharField(max_length=100)
-    place = models.OneToOneField(Places, on_delete=models.CASCADE)
+    offer_name = models.CharField(max_length=50)
+    offer_description= models.TextField(null=True)
+    offer_image = models.URLField(null=True)
+    place = models.ForeignKey(Places, on_delete=models.CASCADE)
     old_price =models.IntegerField()
     new_price =models.IntegerField()
+    
     
     def __str__(self):
         return self.place.place_name

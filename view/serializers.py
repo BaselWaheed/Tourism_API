@@ -57,10 +57,11 @@ class TursimSerializer(serializers.ModelSerializer):
 class EventSerializer(serializers.ModelSerializer):
     date_from = serializers.DateTimeField(format="%d, %b %Y - %I:%M %p")
     date_to = serializers.DateTimeField(format="%d, %b %Y - %I:%M %p")
+    city =  serializers.StringRelatedField()
 
     class Meta:
         model = Event
-        fields = ['event_name','event_image','date_from','date_to','place','discription']
+        fields = ['event_name','event_image','date_from','date_to','city','description']
         depth = 1
 
 class OffersSerializer(serializers.ModelSerializer):

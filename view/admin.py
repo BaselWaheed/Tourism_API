@@ -17,8 +17,8 @@ admin.site.register(Rate,RateAdmin)
 ############################################################################
 class PlacesAdmin(admin.ModelAdmin):
     list_display = ['place_name' , 'city' ,'type' , 'is_active']
-    list_filter = ['type']
-    search_fields = ['place_name']
+    # list_filter = ['type']
+    search_fields = ['place_name','city__city_name']
 
 admin.site.register(Places,PlacesAdmin)
 
@@ -31,7 +31,7 @@ admin.site.register(Offers,OffersAdmin)
 
 ##########################################################################
 class EventAdmin(admin.ModelAdmin):
-    list_display = ['date_from','place' ,'date_to']
+    list_display = ['date_from','city' ,'date_to']
 
 admin.site.register(Event,EventAdmin)
 
@@ -41,6 +41,8 @@ admin.site.register(Favouriteplace)
 
 class CommentAdmin(admin.ModelAdmin):
     list_display = ['id','user' ,'place']
+    
+
 admin.site.register(Commenteplace,CommentAdmin)
 
 
