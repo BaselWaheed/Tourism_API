@@ -96,11 +96,11 @@ class UserSerializer(serializers.ModelSerializer):
         user = EmailAddress.objects.get(user=obj)
         return user.email
 
-    token =serializers.SerializerMethodField()
+    # token =serializers.SerializerMethodField()
 
-    def get_token(self, obj):
-        user= Token.objects.get(user=obj)
-        return user.key
+    # def get_token(self, obj):
+    #     user= Token.objects.get(user=obj)
+    #     return user.key
         
     phone = serializers.SerializerMethodField()
     def get_phone(self,obj):
@@ -109,7 +109,7 @@ class UserSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ['first_name','last_name','username','country','date_of_birth','gender','email','phone', 'token']
+        fields = ['first_name','last_name','username','country','date_of_birth','gender','email','phone']
 
 
     def update(self, instance, validated_data):

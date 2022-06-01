@@ -143,8 +143,8 @@ def resetassword(request, *args, **kwargs):
         password1 =request.POST.get('password1')
         password2 =request.POST.get('password2')
         print(password1)
-        if password1 != password2 :
-            return render(request,'reset_failed.html')
+        # if password1 != password2 :
+        #     return render(request,'reset_failed.html')
         email.user.set_password(password1)
         email.user.save()
         return render(request,'reset_complete.html')
